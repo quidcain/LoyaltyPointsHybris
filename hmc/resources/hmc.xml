@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration xmlns="hybris.de/schemas/hmc/generic"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
+						
+<!-- Configuration for extension cuppytrail -->
+	<explorertree>
+		<group name="loyaltypoint">
+			<typeref type="LoyaltyPointConfiguration"/>
+		</group>
+	</explorertree>
+
+	<type name="LoyaltyPointConfiguration" mode="append">
+		<organizer>
+			<search mode="replace">
+				<condition attribute="currency"/>
+				<condition attribute="type"/>
+				<condition attribute="collectPercentage"/>
+				<condition attribute="collectAmount"/>
+				<condition attribute="orderPercentage"/>
+			</search>
+			<result>
+				<listview mode="replace">
+					<itemlayout>
+						<attribute name="currency"/>
+						<attribute name="type"/>
+						<attribute name="collectPercentage"/>
+						<attribute name="collectAmount"/>
+						<attribute name="orderPercentage"/>
+					</itemlayout>
+				</listview>
+			</result>
+			<editor>
+				<essentials>
+					<listlayout>
+						<attribute name="currency"/>
+						<attribute name="type"/>
+						<attribute name="orderPercentage"/>
+					</listlayout>
+				</essentials>
+				<tab name="tab.loyaltypoint">
+					<section name="section.loyaltypoint">
+						<listlayout>
+							<attribute name="collectPercentage"/>
+							<attribute name="collectAmount"/>
+						</listlayout>
+					</section>
+				</tab>
+			</editor>
+		</organizer>
+	</type>
+	
+</configuration>
