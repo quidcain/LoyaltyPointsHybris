@@ -1,0 +1,10 @@
+# Min constraints for percentages and collectAmount
+INSERT_UPDATE MinConstraint;active[allownull=true];annotation;descriptor(enclosingType(code),qualifier);id[unique=true];message[lang=en];owner(pk);qualifier;severity(code,itemtype(code));target;type(code);value[allownull=true]
+;true;javax.validation.constraints.Min;LoyaltyPointConfiguration:collectPercentage;collectPercentageMinimumConstraint;Percentage value is too low!;;collectPercentage;ERROR:Severity;de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;LoyaltyPointConfiguration;0
+;true;javax.validation.constraints.Min;LoyaltyPointConfiguration:orderPercentage;orderPercentageMinimumConstraint;Percentage value is too low!;;orderPercentage;ERROR:Severity;de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;LoyaltyPointConfiguration;0
+;true;javax.validation.constraints.Min;LoyaltyPointConfiguration:collectAmount;collectAmountMinimumConstraint;The amount is too low!;;collectAmount;ERROR:Severity;de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;LoyaltyPointConfiguration;0
+
+# Max constraints for percentages	
+INSERT_UPDATE MaxConstraint;active[allownull=true];annotation;descriptor(enclosingType(code),qualifier);id[unique=true];message[lang=en];owner(pk);qualifier;severity(code,itemtype(code));target;type(code);value[allownull=true]
+;true;javax.validation.constraints.Max;LoyaltyPointConfiguration:collectPercentage;collectPercentageMaximumConstraint;Percentage value is too high!;;collectPercentage;ERROR:Severity;de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;LoyaltyPointConfiguration;100
+;true;javax.validation.constraints.Max;LoyaltyPointConfiguration:orderPercentage;orderPercentageMaximumConstraint;Percentage value is too high!;;orderPercentage;ERROR:Severity;de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;LoyaltyPointConfiguration;100
