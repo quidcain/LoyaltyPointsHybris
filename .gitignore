@@ -1,0 +1,17 @@
+.classpath
+.externalToolBuilders/
+.pmd
+.project
+.settings/
+.springBeans
+classes/*
+eclipsebin/*
+*.xsd
+*.class
+platformhome.properties
+project.properties.template
+build.xml
+ruleset.xml
+*.jar
+gensrc/*
+

@@ -48,5 +48,13 @@
 				</attribute>
 			</attributes>
 		</itemtype>
+		<itemtype code="Customer" autocreate="false">
+			<attributes>
+				<attribute qualifier="loyaltyPointAmount" type="int">
+					<description>Defines an amount of loyalty points with which part of order can be paid</description>
+					<persistence type="property"/>
+				</attribute>
+			</attributes>
+		</itemtype>
 	</itemtypes>
 </items>
