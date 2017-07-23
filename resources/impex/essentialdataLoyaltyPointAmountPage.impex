@@ -1,0 +1,47 @@
+#
+# Import the CMS content for the Loyalty Point Amount
+#
+$contentCatalog=hybrisContentCatalog	
+$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=Staged])[default=$contentCatalog:Staged]
+$addonExtensionName=loyaltypointaddon
+
+# Configure page for LoyaltyPointAmount
+INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);label;defaultPage[default='true'];approvalStatus(code)[default='approved'];homepage[default='false']
+;;loyaltyPointAmount;Loyalty Point Amount Page;AccountPageTemplate;/my-account/loyaltypoints
+ 
+# Insert Navigation Component
+INSERT_UPDATE AccountNavigationComponent;$contentCV[unique=true];uid[unique=true];name;navigationNode(&nodeRef);styleClass;&componentRef
+;;AccountLoyaltyPointAmountNavigationComponent;Account Loyalty Point Amount Navigation Component;AccountLoyaltyPointAmountNavNode;;AccountLoyaltyPointAmountNavigationComponent
+
+# Link to Navigation Component from main account page 
+INSERT_UPDATE AccountNavigationCollectionComponent;$contentCV[unique=true];uid[unique=true];components(uid, $contentCV)[mode=append]
+;;AccountHomepageComponent;AccountLoyaltyPointAmountNavigationComponent
+
+# New CMS Nav Node for Navigation Component
+INSERT_UPDATE CMSNavigationNode;uid[unique=true];$contentCV[unique=true];name;title;parent(uid, $contentCV);links(&linkRef)[mode=append];&nodeRef
+;AccountLoyaltyPointAmountNavNode;;Loyalty Points;Loyalty Points;SiteRootNode;AccountLoyaltyPointAmountLink;AccountLoyaltyPointAmountNavNode
+
+# Insert Link to AccountLeftNavNode
+INSERT_UPDATE CMSNavigationNode;uid[unique=true];$contentCV[unique=true];name;parent(uid, $contentCV);links(&linkRef)[mode=append];&nodeRef
+;AccountLeftNavNode;;Your Account;SiteRootNode;AccountLoyaltyPointsLink;AccountLeftNavNode
+
+# CMS Link Component for the link on the main account page 
+INSERT_UPDATE CMSLinkComponent;$contentCV[unique=true];uid[unique=true];name;linkName;url;&linkRef;&componentRef;target(code)[default='sameWindow']
+;;AccountLoyaltyPointAmountLink;AccountLoyaltyPointAmountLink;Loyalty point amount;/my-account/loyaltypoints;AccountLoyaltyPointAmountLink;AccountLoyaltyPointAmountLink;
+
+# CMS Link Component for the link on the Left Nav Node 
+INSERT_UPDATE CMSLinkComponent;$contentCV[unique=true];uid[unique=true];name;linkName;url;&linkRef;&componentRef;target(code)[default='sameWindow']
+;;AccountLoyaltyPointsLink;AccountLoyaltyPointsLink;Loyalty Points;/my-account/loyaltypoints;AccountLoyaltyPointsLink;AccountLoyaltyPointsLink;
+
+# the jsp pages
+INSERT_UPDATE JspIncludeComponent;$contentCV[unique=true];uid[unique=true];name;page;actions(uid,$contentCV);&componentRef
+;;AccountLoyaltyPointAmountComponent;Account Loyalty Point Amount Component;/WEB-INF/views/addons/$addonExtensionName/desktop/pages/account/accountLoyaltyPointAmountPage.jsp;;AccountLoyaltyPointAmountComponent
+
+# the content slots for the Subscriptions list page
+INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active;cmsComponents(uid,$contentCV);;;
+;;SideContent-loyaltyPointAmount;Side Content Slot for Loyalty Point Amount;true;AccountLeftNavigationComponent;;;
+;;BodyContent-loyaltyPointAmount;Body Content Slot for Loyalty Point Amount;true;AccountLoyaltyPointAmountComponent;;;
+
+INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true][default='loyaltyPointAmount'];contentSlot(uid,$contentCV)[unique=true];;;
+;;SideContent-loyaltyPointAmount;SideContent;;SideContent-loyaltyPointAmount;;;
+;;BodyContent-loyaltyPointAmount;BodyContent;;BodyContent-loyaltyPointAmount;;;
