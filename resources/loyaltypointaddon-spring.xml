@@ -43,5 +43,14 @@
 	<bean id="loyaltypointaddonSampleDataEventListener" parent="abstractGenericAddOnSampleDataEventListener"  >
 		<property name="extensionName" value="loyaltypointaddon" />
 	</bean>
+	
+	<bean id="customerLoyaltyPointAmountPopulator" 
+		class="de.hybris.platform.addons.loyaltypointaddon.facades.populators.CustomerLoyaltyPointAmountPopulator">
+	</bean>
+	
+	 <bean parent="modifyPopulatorList">
+        <property name="list" ref="customerConverter"/>
+        <property name="add"  ref="customerLoyaltyPointAmountPopulator"/>
+    </bean>
 
 </beans>

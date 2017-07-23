@@ -24,5 +24,9 @@
 		<property name="flag" type="boolean"/>
 	</bean>
 	-->
+	
+	<bean class="de.hybris.platform.commercefacades.user.data.CustomerData">
+		<property name="loyaltyPointAmount" type="int"/>
+	</bean>
 
 </beans>
