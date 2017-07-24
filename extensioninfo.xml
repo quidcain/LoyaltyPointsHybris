@@ -15,13 +15,14 @@
 		<!-- you should add all required extensions to this list, except platform extensions which are automatically required -->         
 		<requires-extension name="addonsupport"/>
 		<requires-extension name="hmc"/>
+		<requires-extension name="backoffice"/>
 		<requires-extension name="acceleratorstorefrontcommons"/>
 		<requires-extension name="commercefacades" />
 		<coremodule generated="true" manager="de.hybris.platform.addons.loyaltypointaddon.jalo.LoyaltypointaddonManager" packageroot="de.hybris.platform.addons.loyaltypointaddon"/>
 		<hmcmodule extensionclassname="de.hybris.platform.addons.loyaltypointaddon.hmc.LoyaltypointHMCExtension"/>
 		
 		<meta key="classpathgen" value="false"/>
-
+		<meta key="backoffice-module" value="true"/>
 	</extension>
 
 </extensioninfo>

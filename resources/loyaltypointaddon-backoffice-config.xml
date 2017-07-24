@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://www.hybris.com/cockpit/config" 
+		xsi:schemaLocation="http://www.hybris.com/cockpit/config http://www.hybris.com/schema/cockpitng/config/cockpit-configuration.xsd">
+    
+	<context component="explorer-tree" merge-by="module">
+		<n:explorer-tree xmlns:n="http://www.hybris.com/cockpitng/config/explorertree">
+            <n:navigation-node id="LoyaltyPointAddon">
+                <n:type-node id="LoyaltyPointConfigurations" code="LoyaltyPointConfiguration" />
+            </n:navigation-node>
+        </n:explorer-tree>
+	</context>
+	<context type="LoyaltyPointConfiguration" component="listview">
+	    <list:list-view xmlns:list="http://www.hybris.com/cockpitng/component/listView">
+	        <list:column qualifier="currency"/>
+	        <list:column qualifier="type"/>
+	        <list:column qualifier="collectPercentage"/>
+	        <list:column qualifier="collectAmount"/>
+	        <list:column qualifier="orderPercentage"/>
+	    </list:list-view>
+	</context>
+	<context type="LoyaltyPointConfiguration" component="advanced-search">
+	    <as:advanced-search xmlns:as="http://www.hybris.com/cockpitng/config/advancedsearch" connection-operator="AND">
+	        <as:field-list>
+	            <as:field name="currency" operator="equal" selected="true"/>
+	            <as:field name="type" operator="equal" selected="true" sortable="false"/>
+	            <as:field name="collectPercentage" operator="equal" selected="false" sortable="false"/>
+	            <as:field name="collectAmount" operator="equal" selected="false" sortable="false"/>
+	            <as:field name="orderPercentage" operator="equal" selected="false" sortable="false"/>
+	        </as:field-list>
+	            <as:sort-field name="currency" asc="true" />
+	    </as:advanced-search>
+	</context>
+
+</config>
