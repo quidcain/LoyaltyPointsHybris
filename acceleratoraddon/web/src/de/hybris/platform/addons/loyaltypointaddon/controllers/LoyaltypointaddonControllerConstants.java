@@ -14,5 +14,6 @@ package de.hybris.platform.addons.loyaltypointaddon.controllers;
  */
 public interface LoyaltypointaddonControllerConstants
 {
-	// implement here controller constants used by this extension
+	final String ADDON_PREFIX = "addon:/loyaltypointaddon/";
+	final String CHECKOUTSUMMARYPAGE = ADDON_PREFIX + "pages/checkout/multi/checkoutSummaryPage";
 }

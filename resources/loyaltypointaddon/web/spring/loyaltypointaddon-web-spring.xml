@@ -10,26 +10,19 @@
  license agreement you entered into with SAP.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/aop
-           http://www.springframework.org/schema/aop/spring-aop.xsd
-           http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context.xsd">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:aop="http://www.springframework.org/schema/aop"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:util="http://www.springframework.org/schema/util"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"> 
            
     <context:annotation-config/> 
-	
-	<bean name="loyaltyPointAmountPageController" class="de.hybris.platform.addons.loyaltypointaddon.controllers.pages.AccountLoyaltyPointAmountPageController"/>
-	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="mappings">
-            <props>
-                <prop key="/my-account/loyaltypoints">loyaltyPointAmountPageController</prop>
-            </props>
-        </property>
-	</bean>
 	
 	<!-- Expose /acceleratoraddon/web/webroot/WEB-INF/messages/base.js.properties  resource bundle as javascript variables -->
 	<bean id="defaultLoyaltypointaddonJavaScriptMessageResourceAccessor" parent="abstractJavaScriptMessageResourceAccessor">
@@ -48,5 +41,43 @@
 	<bean id="LoyaltypointaddonBeforeViewHandlerListMergeDirective" depends-on="beforeViewHandlersList" parent="listMergeDirective">
 		<property name="add" ref="getLoyaltypointaddonBeforeViewHandler"/>
 	</bean>
+	
+	<context:component-scan base-package="de.hybris.platform.addons.loyaltypointaddon.controllers.pages" scope-resolver="de.hybris.platform.spring.IgnoreTenantScopeMetadataResolver"/>
+
+	<bean id="loyaltyPointCheckoutGroup"  class="de.hybris.platform.acceleratorstorefrontcommons.checkout.steps.CheckoutGroup">
+	    <property name="groupId"  value="loyaltyPointCheckoutGroup"/>
+	    <property name="checkoutStepMap">
+	        <map merge="true">
+	            <entry key="multi" value-ref="defaultMultiStepCheckout"/>
+	            <entry key="delivery-address" value-ref="deliveryAddressCheckoutStep"/>
+	            <entry key="delivery-method" value-ref="deliveryMethodCheckoutStep"/>
+	            <entry key="pickup-location" value-ref="pickupLocationCheckoutStep"/>
+	            <entry key="payment-method" value-ref="paymentMethodCheckoutStep"/>
+	            <entry key="summary" value-ref="summaryCheckoutStep"/>
+	        </map>
+	    </property>
+	    <property name="validationResultsMap">
+	        <map merge="true">
+	            <entry key="FAILED" value-ref="REDIRECT_TO_CART"/>
+	            <entry key="REDIRECT_TO_DELIVERY_ADDRESS" value-ref="REDIRECT_TO_DELIVERY_ADDRESS"/>
+	            <entry key="REDIRECT_TO_PICKUP_LOCATION" value-ref="REDIRECT_TO_PICKUP_LOCATION"/>
+	            <entry key="REDIRECT_TO_CART" value-ref="REDIRECT_TO_CART"/>
+	            <entry key="REDIRECT_TO_PAYMENT_METHOD" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+	            <entry key="REDIRECT_TO_DELIVERY_METHOD" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
+	        </map>
+	    </property>
+	    <property name="checkoutProgressBar">
+	        <map merge="true">
+	            <entry key="1" value-ref="deliveryAddressCheckoutStep"/>
+	            <entry key="2" value-ref="deliveryMethodCheckoutStep"/>
+	            <entry key="3" value-ref="paymentMethodCheckoutStep"/>
+	            <entry key="4" value-ref="defaultSummaryCheckoutStep"/>
+	        </map>
+	    </property>
+	</bean>
+
+	<util:map id="checkoutFlowGroupMap" >
+	    <entry key="loyaltyPointCheckoutGroup"  value-ref="loyaltyPointCheckoutGroup"/>
+	</util:map>
 
 </beans>

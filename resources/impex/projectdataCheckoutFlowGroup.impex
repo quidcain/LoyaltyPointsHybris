@@ -1,0 +1,2 @@
+INSERT_UPDATE BaseStore;uid[unique=true];checkoutFlowGroup;
+;hybris;loyaltyPointCheckoutGroup;

@@ -48,9 +48,12 @@
 		class="de.hybris.platform.addons.loyaltypointaddon.facades.populators.CustomerLoyaltyPointAmountPopulator">
 	</bean>
 	
-	 <bean parent="modifyPopulatorList">
+	<bean parent="modifyPopulatorList">
         <property name="list" ref="customerConverter"/>
         <property name="add"  ref="customerLoyaltyPointAmountPopulator"/>
     </bean>
-
+	
+	<context:component-scan base-package="de.hybris.platform.addons.loyaltypointaddon" />
+	<aop:aspectj-autoproxy/>
+	
 </beans>
