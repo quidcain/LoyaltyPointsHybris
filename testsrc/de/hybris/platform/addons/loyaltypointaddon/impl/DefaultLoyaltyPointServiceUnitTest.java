@@ -4,6 +4,8 @@
 package de.hybris.platform.addons.loyaltypointaddon.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import de.hybris.bootstrap.annotations.UnitTest;
@@ -12,6 +14,14 @@ import de.hybris.platform.addons.loyaltypointaddon.daos.LoyaltyPointConfiguratio
 import de.hybris.platform.addons.loyaltypointaddon.enums.LoyaltyPointConfigurationType;
 import de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
+import de.hybris.platform.core.model.order.CartModel;
+import de.hybris.platform.core.model.user.CustomerModel;
+import de.hybris.platform.core.model.user.EmployeeModel;
+import de.hybris.platform.core.model.user.UserModel;
+import de.hybris.platform.order.CartService;
+import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.session.SessionService;
+import de.hybris.platform.servicelayer.user.UserService;
 
 import java.util.Collections;
 
@@ -33,31 +43,122 @@ public class DefaultLoyaltyPointServiceUnitTest
 	@Mock
 	private LoyaltyPointConfigurationDAO loyaltyPointConfigurationDAO;
 
-	private LoyaltyPointConfigurationModel loyaltyPointConfigurationModel;
-	private CurrencyModel currency;
+	@Mock
+	private ModelService modelService;
+
+	@Mock
+	private UserService userService;
+
+	@Mock
+	private CartService cartService;
+
+	@Mock
+	private SessionService sessionService;
 
 	private static final int COLLECT_AMOUNT = 4;
-	private static final int ORDER_PERCENTAGE = 60;
-
+	private static final int COLLECT_PERCENTAGE = 50;
+	private static final int ORDER_PERCENTAGE = 50;
+	private static final double TOTAL_PRICE = 10;
+	private static final int CUSTOMER_LOYALTY_POINT_AMOUNT = 5;
+	private static final String SESSION_ATTRIBUTE = "loyaltypoint_amount";
+	private LoyaltyPointConfigurationModel config;
+	private CurrencyModel currency;
 
 	@Before
 	public void setup()
 	{
 		currency = new CurrencyModel("EUR", "€");
 
-		loyaltyPointConfigurationModel = new LoyaltyPointConfigurationModel();
-		loyaltyPointConfigurationModel.setCurrency(currency);
-		loyaltyPointConfigurationModel.setType(LoyaltyPointConfigurationType.ABSOLUTE);
-		loyaltyPointConfigurationModel.setCollectAmount(COLLECT_AMOUNT);
-		loyaltyPointConfigurationModel.setOrderPercentage(ORDER_PERCENTAGE);
+		config = new LoyaltyPointConfigurationModel();
+		config.setCurrency(currency);
+		config.setType(LoyaltyPointConfigurationType.ABSOLUTE);
+		config.setCollectAmount(COLLECT_AMOUNT);
+		config.setCollectPercentage(COLLECT_PERCENTAGE);
+		config.setOrderPercentage(ORDER_PERCENTAGE);
+
+		when(loyaltyPointConfigurationDAO.findConfigsByCurrency(currency)).thenReturn(Collections.singletonList(config));
 	}
 
-	/*@Test
-	public void testloyaltyPointConfigurationService()
+
+	@Test
+	public void testIsMaximumOrderPercentageExcedeed()
 	{
-		when(loyaltyPointConfigurationDAO.findConfigsByCurrency(currency))
-				.thenReturn(Collections.singletonList(loyaltyPointConfigurationModel));
-		final LoyaltyPointConfigurationModel configForCurrency = loyaltyPointConfigurationService.getConfigsForCurrency(currency);
-		assertEquals(loyaltyPointConfigurationModel, configForCurrency);
-	}*/
+		final UserModel user = new EmployeeModel();
+		modelService.save(user);
+		userService.setCurrentUser(user);
+		when(userService.getCurrentUser()).thenReturn(user);
+
+		assertTrue(loyaltyPointService.isMaximumOrderPercentageExcedeed(0));
+
+		final CustomerModel customer = new CustomerModel();
+		customer.setLoyaltyPointAmount(0);
+		customer.setSessionCurrency(currency);
+		when(userService.getCurrentUser()).thenReturn(customer);
+
+		final CartModel cart = new CartModel();
+		cart.setTotalPrice(TOTAL_PRICE);
+		when(cartService.getSessionCart()).thenReturn(cart);
+
+		assertFalse(loyaltyPointService.isMaximumOrderPercentageExcedeed(-100));
+		assertFalse(loyaltyPointService.isMaximumOrderPercentageExcedeed(0));
+		assertFalse(loyaltyPointService.isMaximumOrderPercentageExcedeed(5));
+		assertTrue(loyaltyPointService.isMaximumOrderPercentageExcedeed(6));
+		assertTrue(loyaltyPointService.isMaximumOrderPercentageExcedeed(100));
+	}
+
+	@Test
+	public void testCollectLoyaltyPoints()
+	{
+		final CustomerModel customer = new CustomerModel();
+		customer.setLoyaltyPointAmount(0);
+		customer.setSessionCurrency(currency);
+		when(userService.getCurrentUser()).thenReturn(customer);
+
+		final CartModel cart = new CartModel();
+		cart.setTotalPrice(TOTAL_PRICE);
+		when(cartService.getSessionCart()).thenReturn(cart);
+
+		loyaltyPointService.collectLoyaltyPoints();
+		assertEquals(COLLECT_AMOUNT, customer.getLoyaltyPointAmount());
+
+		config.setType(LoyaltyPointConfigurationType.RELATIVE);
+		loyaltyPointService.collectLoyaltyPoints();
+
+		assertEquals((int) (TOTAL_PRICE * COLLECT_PERCENTAGE / 100) + COLLECT_AMOUNT, customer.getLoyaltyPointAmount());
+	}
+
+	@Test
+	public void testPayPartWithLoyaltyPoints()
+	{
+		final CartModel cart = new CartModel();
+		cart.setTotalPrice(TOTAL_PRICE);
+		when(cartService.getSessionCart()).thenReturn(cart);
+
+		final UserModel user = new EmployeeModel();
+		when(userService.getCurrentUser()).thenReturn(user);
+
+		loyaltyPointService.payPartWithLoyaltyPoints();
+		assertEquals(Double.valueOf(TOTAL_PRICE), cart.getTotalPrice());
+
+		final CustomerModel customer = new CustomerModel();
+		customer.setLoyaltyPointAmount(CUSTOMER_LOYALTY_POINT_AMOUNT);
+		customer.setSessionCurrency(currency);
+		when(userService.getCurrentUser()).thenReturn(customer);
+
+		when(sessionService.getAttribute(SESSION_ATTRIBUTE)).thenReturn(null);
+		loyaltyPointService.payPartWithLoyaltyPoints();
+		assertEquals(Double.valueOf(TOTAL_PRICE), cart.getTotalPrice());
+		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
+
+		when(sessionService.getAttribute(SESSION_ATTRIBUTE)).thenReturn(new Double(5f));
+		loyaltyPointService.payPartWithLoyaltyPoints();
+		assertEquals(Double.valueOf(TOTAL_PRICE), cart.getTotalPrice());
+		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
+
+		when(sessionService.getAttribute(SESSION_ATTRIBUTE)).thenReturn(CUSTOMER_LOYALTY_POINT_AMOUNT);
+		loyaltyPointService.payPartWithLoyaltyPoints();
+		assertEquals(Double.valueOf(TOTAL_PRICE - CUSTOMER_LOYALTY_POINT_AMOUNT), cart.getTotalPrice());
+		assertEquals(0, customer.getLoyaltyPointAmount());
+	}
+
 }

@@ -115,7 +115,7 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 				if (totalPrice != null)
 				{
 					customer.setLoyaltyPointAmount(
-							(int) (oldLoyaltyPointAmount + totalPrice.doubleValue() * config.getCollectPercentage() / 100));
+							oldLoyaltyPointAmount + (int) (totalPrice.doubleValue() * config.getCollectPercentage() / 100));
 				}
 				break;
 		}
