@@ -25,15 +25,18 @@
  		<div id="checkoutContentPanel" class="clearfix">
             <div class="headline">Loyalty point payment</div>
 			<div class="description"><p>Amount of loyalty point that you want to spend</p></div>
-            <form method="get" action="${request.contextPath}/checkout/multi/addon/loyaltypoint-payment/select">
+            <form:form method="post" modelAttribute="loyaltyPointAmountForm">	
+            	<div class="clearfix">
+            		<form:input path="loyaltyPointAmount" />
+	 				<form:errors path="loyaltyPointAmount" cssStyle="color: red;" element="div"/>
+            	</div>
 	 			<div class="form-actions">
-	 				<input type="text" name="loyaltypoint_amount">
 					<a class="button" href="<c:url value="${previousStepUrl}"/>"><spring:theme code="checkout.multi.cancel" text="Cancel"/></a>
 	            	<button id="loyaltyPointPayment_continue_button" class="show_processing_message">
 						<spring:theme code="checkout.multi.loyaltyPointPayment.continue" text="Continue"/>
 					</button>
 				</div>
-	 		</form>
+	 		</form:form>
         </div>
  		
  	</div>

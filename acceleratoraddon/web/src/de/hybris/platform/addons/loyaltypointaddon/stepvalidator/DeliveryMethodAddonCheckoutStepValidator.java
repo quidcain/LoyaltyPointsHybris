@@ -1,4 +1,4 @@
-package de.hybris.platform.addons.loyaltypointaddon.validator;
+package de.hybris.platform.addons.loyaltypointaddon.stepvalidator;
 
 import de.hybris.merchandise.storefront.checkout.steps.validation.impl.DefaultDeliveryMethodCheckoutStepValidator;
 import de.hybris.platform.acceleratorstorefrontcommons.checkout.steps.validation.ValidationResults;

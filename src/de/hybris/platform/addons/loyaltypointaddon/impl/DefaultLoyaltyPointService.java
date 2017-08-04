@@ -65,7 +65,6 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 		}
 	}
 
-
 	private Double getTotalPrice()
 	{
 		return cartService.getSessionCart().getTotalPrice();
@@ -77,16 +76,33 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 	}
 
 	@Override
-	public boolean isMaximumOrderPercentageExcedeed()
+	public boolean isMaximumOrderPercentageExcedeed(final Integer value)
 	{
-
-		return false;
+		final CustomerModel customer = getCurrentCustomer();
+		if (customer == null)
+		{
+			return true;
+		}
+		final LoyaltyPointConfigurationModel config = getConfigsForCurrency(getCurrency(customer));
+		final int maxLoyaltyPartOfOrder = (int) (getTotalPrice() * config.getOrderPercentage() / 100);
+		if (value > maxLoyaltyPartOfOrder)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
 	public void collectLoyaltyPoints()
 	{
 		final CustomerModel customer = getCurrentCustomer();
+		if (customer == null)
+		{
+			return;
+		}
 		final LoyaltyPointConfigurationModel config = getConfigsForCurrency(getCurrency(customer));
 		final Double totalPrice = getTotalPrice();
 		final int oldLoyaltyPointAmount = customer.getLoyaltyPointAmount();
@@ -110,6 +126,10 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 	public void payPartWithLoyaltyPoints()
 	{
 		final CustomerModel customer = getCurrentCustomer();
+		if (customer == null)
+		{
+			return;
+		}
 		final LoyaltyPointConfigurationModel config = getConfigsForCurrency(getCurrency(customer));
 		final Object loyaltypointAmount = sessionService.getAttribute("loyaltypoint_amount");
 		if (loyaltypointAmount != null && loyaltypointAmount instanceof Integer)

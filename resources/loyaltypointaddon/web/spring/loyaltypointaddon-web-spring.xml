@@ -68,7 +68,7 @@
 	    <property name="progressBarId" value="deliveryMethod"/>
 	</bean>
 
-    <bean id="deliveryMethodCheckoutStepAddonValidator" class="de.hybris.platform.addons.loyaltypointaddon.validator.DeliveryMethodAddonCheckoutStepValidator" parent="abstractCheckoutStepValidator">
+    <bean id="deliveryMethodCheckoutStepAddonValidator" class="de.hybris.platform.addons.loyaltypointaddon.stepvalidator.DeliveryMethodAddonCheckoutStepValidator" parent="abstractCheckoutStepValidator">
         <property name="userService" ref="userService"/>
     </bean>
 
