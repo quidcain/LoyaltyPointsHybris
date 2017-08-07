@@ -14,4 +14,15 @@ build.xml
 ruleset.xml
 *.jar
 gensrc/*
-
+resources/loyaltypointaddon/loyaltypointaddon-testclasses.xml
+velocity.log
+acceleratoraddon/web/src/de/hybris/platform/addons/loyaltypointaddon/constants/LoyaltypointaddonWebConstants.java
+src/de/hybris/platform/addons/loyaltypointaddon/constants/LoyaltypointaddonConstants.java
+src/de/hybris/platform/addons/loyaltypointaddon/LoyaltypointaddonStandalone.java
+hmc/classes/rebel.xml
+buildcallbacks.xml
+project.properties
+acceleratoraddon/web/webroot/_ui/responsive/common/**
+resources/loyaltypointaddon.build.number
+resources/loyaltypointaddon/import/**
+src/de/hybris/platform/addons/loyaltypointaddon/jalo/**
