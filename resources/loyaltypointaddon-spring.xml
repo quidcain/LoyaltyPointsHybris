@@ -58,5 +58,8 @@
 	
 	<bean id="validator"
     	class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+    	
+    <bean id="loyaltyPointAcceleratorCheckoutFacade" 
+    	class="de.hybris.platform.addons.loyaltypointaddon.facades.impl.LoyaltyPointAcceleratorCheckoutFacade" parent="acceleratorCheckoutFacade"/>
 	
 </beans>

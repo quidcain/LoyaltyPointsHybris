@@ -43,46 +43,23 @@
 	</bean>
 	
 	<context:component-scan base-package="de.hybris.platform.addons.loyaltypointaddon.controllers.pages" scope-resolver="de.hybris.platform.spring.IgnoreTenantScopeMetadataResolver"/>
-
-	<alias name="defaultLoyaltyDeliveryAddressCheckoutStep" alias="loyaltyDeliveryAddressCheckoutStep"/>
-    <bean id="defaultLoyaltyDeliveryAddressCheckoutStep" parent="deliveryAddressCheckoutStep">
-        <property name="transitions">
-            <map merge="true">
-                <entry key="next" value-ref="REDIRECT_TO_LOYALTY_DELIVERY_METHOD"/>
-            </map>
-        </property>
-        <property name="progressBarId" value="deliveryAddress"/>
-    </bean>
-
-	<alias name="defaultLoyaltyDeliveryMethodCheckoutStep" alias="loyaltyDeliveryMethodCheckoutStep"/>
-	<bean id="defaultLoyaltyDeliveryMethodCheckoutStep" parent="checkoutStep">
+	
+	<alias name="defaultAddonDeliveryMethodCheckoutStep" alias="addonDeliveryMethodCheckoutStep"/>
+	<bean id="defaultAddonDeliveryMethodCheckoutStep" parent="deliveryMethodCheckoutStep">
 	    <property name="checkoutGroup" ref="loyaltyPointCheckoutGroup"/>
 	    <property name="checkoutStepValidator" ref="deliveryMethodCheckoutStepAddonValidator"/>
-	    <property name="transitions">
-	        <map merge="true">
-	            <entry key="previous" value-ref="REDIRECT_TO_DELIVERY_ADDRESS"/>
-	            <entry key="current" value-ref="REDIRECT_TO_LOYALTY_DELIVERY_METHOD"/>
-	            <entry key="next" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
-	        </map>
-	    </property>
-	    <property name="progressBarId" value="deliveryMethod"/>
 	</bean>
 
     <bean id="deliveryMethodCheckoutStepAddonValidator" class="de.hybris.platform.addons.loyaltypointaddon.stepvalidator.DeliveryMethodAddonCheckoutStepValidator" parent="abstractCheckoutStepValidator">
         <property name="userService" ref="userService"/>
     </bean>
-
-	<bean id="REDIRECT_TO_LOYALTY_DELIVERY_METHOD" class="java.lang.String">
-	    <constructor-arg value="redirect:/checkout/multi/addon/delivery-method"/>
-	</bean> 
 	
-
 	<alias name="defaultLoyaltyPointPaymentCheckoutStep" alias="loyaltyPointPaymentCheckoutStep" />
 	<bean id="defaultLoyaltyPointPaymentCheckoutStep" parent="checkoutStep">
 	    <property name="checkoutGroup" ref="loyaltyPointCheckoutGroup"/>
 	    <property name="transitions">
 	        <map merge="true">
-	            <entry key="previous" value-ref="REDIRECT_TO_LOYALTY_DELIVERY_METHOD"/>
+	            <entry key="previous" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
 	            <entry key="current" value-ref="REDIRECT_TO_LOYALTYPOINT_PAYMENT"/>
 	            <entry key="next" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
 	        </map>
@@ -94,16 +71,29 @@
 	    <constructor-arg value="redirect:/checkout/multi/addon/loyaltypoint-payment"/>
 	</bean> 
 
-	<alias name="defaultLoyaltyPaymentMethodCheckoutStep" alias="loyaltyPaymentMethodCheckoutStep"/>
-	<bean id="defaultLoyaltyPaymentMethodCheckoutStep" parent="paymentMethodCheckoutStep">
+	<!-- <alias name="defaultAddonPaymentMethodCheckoutStep" alias="addonPaymentMethodCheckoutStep"/>
+	<bean id="defaultAddonPaymentMethodCheckoutStep" parent="paymentMethodCheckoutStep">
 	    <property name="transitions">
 	        <map merge="true">
-	            <entry key="previous" value-ref="REDIRECT_TO_LOYALTY_DELIVERY_METHOD"/>
-	            <entry key="current" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+	            <entry key="next" value-ref="REDIRECT_TO_SUMMARY"/>
+	        </map>
+	    </property>	
+	</bean> -->
+	
+	<alias name="defaultAddonSummaryCheckoutStep" alias="addonSummaryCheckoutStep"/>
+	<bean id="defaultAddonSummaryCheckoutStep" parent="summaryCheckoutStep">
+		<property name="checkoutGroup" ref="loyaltyPointCheckoutGroup"/>
+	    <property name="transitions">
+	        <map merge="true">
+	            <entry key="current" value-ref="REDIRECT_TO_ADDON_SUMMARY"/>
 	        </map>
 	    </property>
+	    <property name="progressBarId" value="summary"/>
 	</bean>
 	
+	<bean id="REDIRECT_TO_ADDON_SUMMARY" class="java.lang.String">
+	    <constructor-arg value="redirect:/checkout/multi/addon/summary"/>
+	</bean> 
 
 	<bean id="loyaltyPointCheckoutGroup"  class="de.hybris.platform.acceleratorstorefrontcommons.checkout.steps.CheckoutGroup">
 	    <property name="groupId"  value="loyaltyPointCheckoutGroup"/>
@@ -111,7 +101,7 @@
 	        <map merge="true">
 	            <entry key="multi" value-ref="defaultMultiStepCheckout"/>
 	            <entry key="delivery-address" value-ref="deliveryAddressCheckoutStep"/>
-	            <entry key="delivery-method" value-ref="loyaltyDeliveryMethodCheckoutStep"/>
+	            <entry key="delivery-method" value-ref="addonDeliveryMethodCheckoutStep"/>
 	            <entry key="loyaltypoint-payment" value-ref="loyaltyPointPaymentCheckoutStep"/>
 	            <entry key="pickup-location" value-ref="pickupLocationCheckoutStep"/>
 	            <entry key="payment-method" value-ref="paymentMethodCheckoutStep"/>
@@ -123,18 +113,19 @@
 	            <entry key="FAILED" value-ref="REDIRECT_TO_CART"/>
 	            <entry key="REDIRECT_TO_CART" value-ref="REDIRECT_TO_CART"/>
 	            <entry key="REDIRECT_TO_DELIVERY_ADDRESS" value-ref="REDIRECT_TO_DELIVERY_ADDRESS"/>
-	            <entry key="REDIRECT_TO_DELIVERY_METHOD" value-ref="REDIRECT_TO_LOYALTY_DELIVERY_METHOD"/>
+	            <entry key="REDIRECT_TO_DELIVERY_METHOD" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
 	            <entry key="REDIRECT_TO_DUMMY_STEP" value-ref="REDIRECT_TO_LOYALTYPOINT_PAYMENT"/>
 	            <entry key="REDIRECT_TO_PICKUP_LOCATION" value-ref="REDIRECT_TO_PICKUP_LOCATION"/>
 	            <entry key="REDIRECT_TO_PAYMENT_METHOD" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+	            <entry key="REDIRECT_TO_SUMMARY" value-ref="REDIRECT_TO_SUMMARY"/>
 	        </map>
 	    </property>
 	    <property name="checkoutProgressBar">	
 	        <map merge="true">
 	            <entry key="1" value-ref="deliveryAddressCheckoutStep"/>
-	            <entry key="2" value-ref="deliveryMethodCheckoutStep"/>
-	            <entry key="4" value-ref="paymentMethodCheckoutStep"/>
-	            <entry key="5" value-ref="defaultSummaryCheckoutStep"/>
+	            <entry key="2" value-ref="addonDeliveryMethodCheckoutStep"/>
+	            <entry key="3" value-ref="paymentMethodCheckoutStep"/>
+	            <entry key="4" value-ref="summaryCheckoutStep"/>
 	        </map>
 	    </property>
 	</bean>

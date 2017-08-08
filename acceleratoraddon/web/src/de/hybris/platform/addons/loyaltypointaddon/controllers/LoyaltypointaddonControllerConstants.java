@@ -16,5 +16,6 @@ public interface LoyaltypointaddonControllerConstants
 {
 	final String ADDON_PREFIX = "addon:/loyaltypointaddon/";
 	final String LoyaltypointPaymentPage = ADDON_PREFIX + "pages/checkout/multi/loyaltyPointPaymentPage";
-	String ChooseDeliveryMethodPage = ADDON_PREFIX + "pages/checkout/multi/chooseDeliveryMethod";
+	//final String CheckoutSummaryPage = "pages/checkout/multi/checkoutSummaryPage";
+	final String CheckoutSummaryPage = ADDON_PREFIX + "pages/checkout/multi/checkoutSummaryPage";
 }

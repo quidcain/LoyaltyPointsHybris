@@ -18,6 +18,10 @@
 		<requires-extension name="backoffice"/>
 		<requires-extension name="acceleratorstorefrontcommons"/>
 		<requires-extension name="commercefacades" />
+		<requires-extension name="commerceservices" />
+		<requires-extension name="acceleratorcms"/>
+		<requires-extension name="acceleratorfacades"/>
+		
 		<coremodule generated="true" manager="de.hybris.platform.addons.loyaltypointaddon.jalo.LoyaltypointaddonManager" packageroot="de.hybris.platform.addons.loyaltypointaddon"/>
 		<hmcmodule extensionclassname="de.hybris.platform.addons.loyaltypointaddon.hmc.LoyaltypointHMCExtension"/>
 		
