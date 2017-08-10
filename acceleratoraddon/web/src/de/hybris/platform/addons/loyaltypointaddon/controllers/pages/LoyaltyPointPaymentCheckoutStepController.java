@@ -44,7 +44,9 @@ public class LoyaltyPointPaymentCheckoutStepController extends AbstractCheckoutS
 			throws CMSItemNotFoundException, CommerceCartModificationException
 	{
 		setupAddPaymentPage(model);
-		model.addAttribute(new LoyaltyPointAmountForm());
+		final LoyaltyPointAmountForm form = new LoyaltyPointAmountForm();
+		form.setLoyaltyPointAmount(0);
+		model.addAttribute(form);
 		return LoyaltypointaddonControllerConstants.LoyaltypointPaymentPage;
 	}
 
