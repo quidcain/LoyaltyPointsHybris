@@ -70,15 +70,6 @@
 	<bean id="REDIRECT_TO_LOYALTYPOINT_PAYMENT" class="java.lang.String">
 	    <constructor-arg value="redirect:/checkout/multi/addon/loyaltypoint-payment"/>
 	</bean> 
-
-	<!-- <alias name="defaultAddonPaymentMethodCheckoutStep" alias="addonPaymentMethodCheckoutStep"/>
-	<bean id="defaultAddonPaymentMethodCheckoutStep" parent="paymentMethodCheckoutStep">
-	    <property name="transitions">
-	        <map merge="true">
-	            <entry key="next" value-ref="REDIRECT_TO_SUMMARY"/>
-	        </map>
-	    </property>	
-	</bean> -->
 	
 	<alias name="defaultAddonSummaryCheckoutStep" alias="addonSummaryCheckoutStep"/>
 	<bean id="defaultAddonSummaryCheckoutStep" parent="summaryCheckoutStep">
