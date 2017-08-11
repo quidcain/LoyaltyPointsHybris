@@ -4,6 +4,7 @@
 package de.hybris.platform.addons.loyaltypointaddon.daos.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import de.hybris.bootstrap.annotations.IntegrationTest;
@@ -68,6 +69,8 @@ public class DefaultLoyaltyPointConfigurationDAOIntegrationTest extends Servicel
 		configsByCurrency = loyaltyPointConfigurationDAOs.findConfigsByCurrency(currency);
 		assertTrue(configsByCurrency.size() != 0);
 		assertEquals(1, configsByCurrency.size());
+
+		assertNull(loyaltyPointConfigurationDAOs.findConfigsByCurrency(new CurrencyModel()));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

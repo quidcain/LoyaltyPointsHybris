@@ -11,7 +11,6 @@ import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.exceptions.AmbiguousIdentifierException;
-import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
@@ -42,7 +41,7 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 		final List<LoyaltyPointConfigurationModel> result = loyaltyPointConfigurationDAO.findConfigsByCurrency(currency);
 		if (result.isEmpty())
 		{
-			throw new UnknownIdentifierException("Config with code '" + currency + "' not found!");
+			return null;
 		}
 		else if (result.size() > 1)
 		{
@@ -104,6 +103,10 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 			return;
 		}
 		final LoyaltyPointConfigurationModel config = getConfigsForCurrency(getCurrency(customer));
+		if (config == null)
+		{
+			return;
+		}
 		final Double totalPrice = getTotalPrice();
 		final int oldLoyaltyPointAmount = customer.getLoyaltyPointAmount();
 		switch (config.getType())
