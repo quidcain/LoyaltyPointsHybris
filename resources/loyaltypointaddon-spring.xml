@@ -58,8 +58,16 @@
 	
 	<bean id="validator"
     	class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-    	
-    <bean id="loyaltyPointAcceleratorCheckoutFacade" 
-    	class="de.hybris.platform.addons.loyaltypointaddon.facades.impl.LoyaltyPointAcceleratorCheckoutFacade" parent="acceleratorCheckoutFacade"/>
-	
+
+	<alias name="loyaltyPointAcceleratorCheckoutFacade" alias="acceleratorCheckoutFacade"/>
+	<bean id="loyaltyPointAcceleratorCheckoutFacade"
+		  class="de.hybris.platform.addons.loyaltypointaddon.facades.impl.LoyaltyPointAcceleratorCheckoutFacade" parent="defaultAcceleratorCheckoutFacade"/>
+
+
+	<alias name="loyaltyCalculationService" alias="calculationService"/>
+	<bean id="loyaltyCalculationService" class="de.hybris.platform.addons.loyaltypointaddon.impl.LoyaltyCalculationService"
+		  parent="defaultCalculationService" >
+		<property name="loyaltyPointService" ref="loyaltyPointService" />
+	</bean>
+
 </beans>

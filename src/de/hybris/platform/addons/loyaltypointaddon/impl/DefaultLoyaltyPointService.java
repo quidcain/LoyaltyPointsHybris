@@ -7,20 +7,18 @@ import de.hybris.platform.addons.loyaltypointaddon.LoyaltyPointService;
 import de.hybris.platform.addons.loyaltypointaddon.daos.LoyaltyPointConfigurationDAO;
 import de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
-import de.hybris.platform.core.model.order.CartModel;
+import de.hybris.platform.core.model.order.AbstractOrderModel;
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.exceptions.AmbiguousIdentifierException;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 
 @Service("loyaltyPointService")
@@ -126,7 +124,7 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 	}
 
 	@Override
-	public void payPartWithLoyaltyPoints()
+	public void payPartWithLoyaltyPoints(AbstractOrderModel abstractOrder)
 	{
 		final CustomerModel customer = getCurrentCustomer();
 		if (customer == null)
@@ -140,10 +138,8 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 			final Integer intloyaltypointAmount = (Integer) loyaltypointAmount;
 			if (config != null)
 			{
-				final CartModel cart = cartService.getSessionCart();
-				cart.setTotalPrice(getTotalPrice() - intloyaltypointAmount);
-				cartService.setSessionCart(cart);
-				modelService.save(cart);
+				abstractOrder.setTotalPrice(getTotalPrice() - intloyaltypointAmount);
+				modelService.save(abstractOrder);
 				customer.setLoyaltyPointAmount(customer.getLoyaltyPointAmount() - intloyaltypointAmount);
 				modelService.save(customer);
 			}

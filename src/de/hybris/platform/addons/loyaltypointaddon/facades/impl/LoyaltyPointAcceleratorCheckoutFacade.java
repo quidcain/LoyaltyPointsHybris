@@ -18,7 +18,6 @@ public class LoyaltyPointAcceleratorCheckoutFacade extends DefaultAcceleratorChe
 	@Override
 	public void beforePlaceOrder(@SuppressWarnings("unused") final CartModel cartModel)
 	{
-		loyaltyPointService.payPartWithLoyaltyPoints();
 		loyaltyPointService.collectLoyaltyPoints();
 	}
 
