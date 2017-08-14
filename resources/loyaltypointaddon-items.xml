@@ -57,5 +57,13 @@
 				</attribute>
 			</attributes>
 		</itemtype>
+		<itemtype code="AbstractOrder" autocreate="false">
+			<attributes>
+				<attribute qualifier="loyaltyPointAmount" type="int">
+					<persistence type="property"/>
+					<defaultvalue>0</defaultvalue>
+				</attribute>
+			</attributes>
+		</itemtype>
 	</itemtypes>
 </items>

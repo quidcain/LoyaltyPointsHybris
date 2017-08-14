@@ -2,6 +2,7 @@ package de.hybris.platform.addons.loyaltypointaddon.impl;
 
 import de.hybris.platform.addons.loyaltypointaddon.LoyaltyPointService;
 import de.hybris.platform.core.model.order.AbstractOrderModel;
+import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.order.exceptions.CalculationException;
 import de.hybris.platform.order.impl.DefaultCalculationService;
 import de.hybris.platform.util.TaxValue;
@@ -14,10 +15,11 @@ public class LoyaltyCalculationService extends DefaultCalculationService
     private LoyaltyPointService loyaltyPointService;
 
     @Override
-    protected void calculateTotals(AbstractOrderModel order, boolean recalculate, Map<TaxValue, Map<Set<TaxValue>, Double>> taxValueMap) throws CalculationException
+    protected void calculateTotals(AbstractOrderModel abstractOrder, boolean recalculate, Map<TaxValue, Map<Set<TaxValue>, Double>> taxValueMap) throws CalculationException
     {
-        super.calculateTotals(order, recalculate, taxValueMap);
-        loyaltyPointService.payPartWithLoyaltyPoints(order);
+        super.calculateTotals(abstractOrder, recalculate, taxValueMap);
+        if (abstractOrder instanceof OrderModel)
+            loyaltyPointService.payPartWithLoyaltyPoints((OrderModel) abstractOrder);
     }
 
     public void setLoyaltyPointService(LoyaltyPointService loyaltyPointService)

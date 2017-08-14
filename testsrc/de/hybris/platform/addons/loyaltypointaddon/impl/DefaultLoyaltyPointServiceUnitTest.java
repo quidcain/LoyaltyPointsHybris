@@ -3,11 +3,6 @@
  */
 package de.hybris.platform.addons.loyaltypointaddon.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.addons.loyaltypointaddon.LoyaltyPointService;
 import de.hybris.platform.addons.loyaltypointaddon.daos.LoyaltyPointConfigurationDAO;
@@ -15,6 +10,7 @@ import de.hybris.platform.addons.loyaltypointaddon.enums.LoyaltyPointConfigurati
 import de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.core.model.order.CartModel;
+import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.core.model.user.EmployeeModel;
 import de.hybris.platform.core.model.user.UserModel;
@@ -22,15 +18,17 @@ import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
-
-import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 
 @UnitTest
@@ -130,15 +128,14 @@ public class DefaultLoyaltyPointServiceUnitTest
 	@Test
 	public void testPayPartWithLoyaltyPoints()
 	{
-		final CartModel cart = new CartModel();
-		cart.setTotalPrice(TOTAL_PRICE);
-		when(cartService.getSessionCart()).thenReturn(cart);
+		final OrderModel order = new OrderModel();
+		order.setTotalPrice(TOTAL_PRICE);
 
 		final UserModel user = new EmployeeModel();
 		when(userService.getCurrentUser()).thenReturn(user);
 
-		loyaltyPointService.payPartWithLoyaltyPoints();
-		assertEquals(Double.valueOf(TOTAL_PRICE), cart.getTotalPrice());
+		loyaltyPointService.payPartWithLoyaltyPoints(order);
+		assertEquals(Double.valueOf(TOTAL_PRICE), order.getTotalPrice());
 
 		final CustomerModel customer = new CustomerModel();
 		customer.setLoyaltyPointAmount(CUSTOMER_LOYALTY_POINT_AMOUNT);
@@ -146,18 +143,18 @@ public class DefaultLoyaltyPointServiceUnitTest
 		when(userService.getCurrentUser()).thenReturn(customer);
 
 		when(sessionService.getAttribute(SESSION_ATTRIBUTE)).thenReturn(null);
-		loyaltyPointService.payPartWithLoyaltyPoints();
-		assertEquals(Double.valueOf(TOTAL_PRICE), cart.getTotalPrice());
+		loyaltyPointService.payPartWithLoyaltyPoints(order);
+		assertEquals(Double.valueOf(TOTAL_PRICE), order.getTotalPrice());
 		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
 
 		when(sessionService.getAttribute(SESSION_ATTRIBUTE)).thenReturn(new Double(5f));
-		loyaltyPointService.payPartWithLoyaltyPoints();
-		assertEquals(Double.valueOf(TOTAL_PRICE), cart.getTotalPrice());
+		loyaltyPointService.payPartWithLoyaltyPoints(order);
+		assertEquals(Double.valueOf(TOTAL_PRICE), order.getTotalPrice());
 		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
 
 		when(sessionService.getAttribute(SESSION_ATTRIBUTE)).thenReturn(CUSTOMER_LOYALTY_POINT_AMOUNT);
-		loyaltyPointService.payPartWithLoyaltyPoints();
-		assertEquals(Double.valueOf(TOTAL_PRICE - CUSTOMER_LOYALTY_POINT_AMOUNT), cart.getTotalPrice());
+		loyaltyPointService.payPartWithLoyaltyPoints(order);
+		assertEquals(Double.valueOf(TOTAL_PRICE - CUSTOMER_LOYALTY_POINT_AMOUNT), order.getTotalPrice());
 		assertEquals(0, customer.getLoyaltyPointAmount());
 	}
 

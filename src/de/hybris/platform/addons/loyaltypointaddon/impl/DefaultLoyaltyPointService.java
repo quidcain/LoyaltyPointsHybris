@@ -7,7 +7,7 @@ import de.hybris.platform.addons.loyaltypointaddon.LoyaltyPointService;
 import de.hybris.platform.addons.loyaltypointaddon.daos.LoyaltyPointConfigurationDAO;
 import de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
-import de.hybris.platform.core.model.order.AbstractOrderModel;
+import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.exceptions.AmbiguousIdentifierException;
@@ -32,7 +32,6 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 	private UserService userService;
 	private CartService cartService;
 	private SessionService sessionService;
-
 
 	private LoyaltyPointConfigurationModel getConfigsForCurrency(final CurrencyModel currency)
 	{
@@ -124,7 +123,7 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 	}
 
 	@Override
-	public void payPartWithLoyaltyPoints(AbstractOrderModel abstractOrder)
+	public void payPartWithLoyaltyPoints(OrderModel order)
 	{
 		final CustomerModel customer = getCurrentCustomer();
 		if (customer == null)
@@ -132,7 +131,7 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 			return;
 		}
 		final LoyaltyPointConfigurationModel config = getConfigsForCurrency(getCurrency(customer));
-		final Object loyaltypointAmount = sessionService.getAttribute("loyaltypoint_amount");
+		/*final Object loyaltypointAmount = sessionService.getAttribute("loyaltypoint_amount");
 		if (loyaltypointAmount != null && loyaltypointAmount instanceof Integer)
 		{
 			final Integer intloyaltypointAmount = (Integer) loyaltypointAmount;
@@ -143,6 +142,14 @@ public class DefaultLoyaltyPointService implements LoyaltyPointService
 				customer.setLoyaltyPointAmount(customer.getLoyaltyPointAmount() - intloyaltypointAmount);
 				modelService.save(customer);
 			}
+		}*/
+		int loyaltyPointAmount = order.getLoyaltyPointAmount();
+		if (config != null)
+		{
+			order.setTotalPrice(order.getTotalPrice() - loyaltyPointAmount);
+			modelService.save(order);
+			customer.setLoyaltyPointAmount(customer.getLoyaltyPointAmount() - loyaltyPointAmount);
+			modelService.save(customer);
 		}
 
 	}

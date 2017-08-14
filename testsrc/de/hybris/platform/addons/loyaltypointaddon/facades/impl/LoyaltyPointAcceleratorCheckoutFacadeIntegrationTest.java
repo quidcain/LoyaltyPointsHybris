@@ -1,14 +1,11 @@
 /**
  *
  */
-package de.hybris.platform.addons.facades.impl;
-
-import static org.junit.Assert.assertEquals;
+package de.hybris.platform.addons.loyaltypointaddon.facades.impl;
 
 import de.hybris.bootstrap.annotations.IntegrationTest;
 import de.hybris.platform.addons.loyaltypointaddon.LoyaltyPointService;
 import de.hybris.platform.addons.loyaltypointaddon.enums.LoyaltyPointConfigurationType;
-import de.hybris.platform.addons.loyaltypointaddon.facades.impl.LoyaltyPointAcceleratorCheckoutFacade;
 import de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
 import de.hybris.platform.core.model.order.CartModel;
@@ -21,11 +18,12 @@ import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import de.hybris.platform.servicelayer.user.UserService;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.annotation.Resource;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 
 @IntegrationTest

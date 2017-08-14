@@ -21,6 +21,7 @@ public class LoyaltyPointAcceleratorCheckoutFacade extends DefaultAcceleratorChe
 		loyaltyPointService.collectLoyaltyPoints();
 	}
 
+
 	@Resource
 	public void setLoyaltyPointService(final LoyaltyPointService loyaltyPointService)
 	{

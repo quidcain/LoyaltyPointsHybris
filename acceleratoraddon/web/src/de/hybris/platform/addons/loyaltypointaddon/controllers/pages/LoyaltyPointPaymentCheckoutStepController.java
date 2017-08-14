@@ -13,6 +13,9 @@ import de.hybris.platform.addons.loyaltypointaddon.forms.LoyaltyPointAmountForm;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.ContentPageModel;
 import de.hybris.platform.commerceservices.order.CommerceCartModificationException;
+import de.hybris.platform.core.model.order.CartModel;
+import de.hybris.platform.order.CartService;
+import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.session.SessionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +38,8 @@ public class LoyaltyPointPaymentCheckoutStepController extends AbstractCheckoutS
 
 	private LoyaltyPointService loyaltyPointService;
 	private SessionService sessionService;
+	private CartService cartService;
+	private ModelService modelService;
 
 	@Override
 	@RequestMapping(method = RequestMethod.GET)
@@ -59,8 +64,11 @@ public class LoyaltyPointPaymentCheckoutStepController extends AbstractCheckoutS
 		{
 			return LoyaltypointaddonControllerConstants.LoyaltypointPaymentPage;
 		}
-		sessionService.setAttribute("loyaltypoint_amount", loyaltyPointAmountForm.getLoyaltyPointAmount());
-
+		//sessionService.setAttribute("loyaltypoint_amount", loyaltyPointAmountForm.getLoyaltyPointAmount());
+		CartModel cart = cartService.getSessionCart();
+		cart.setLoyaltyPointAmount(loyaltyPointAmountForm.getLoyaltyPointAmount());
+		cartService.setSessionCart(cart);
+		modelService.save(cart);
 		return getCheckoutStep().nextStep();
 	}
 
@@ -109,4 +117,13 @@ public class LoyaltyPointPaymentCheckoutStepController extends AbstractCheckoutS
 		this.sessionService = sessionService;
 	}
 
+	@Resource
+	public void setCartService(CartService cartService) {
+		this.cartService = cartService;
+	}
+
+	@Resource
+	public void setModelService(ModelService modelService) {
+		this.modelService = modelService;
+	}
 }

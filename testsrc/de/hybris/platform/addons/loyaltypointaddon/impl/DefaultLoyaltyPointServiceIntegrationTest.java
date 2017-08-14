@@ -8,7 +8,6 @@ import de.hybris.platform.addons.loyaltypointaddon.LoyaltyPointService;
 import de.hybris.platform.addons.loyaltypointaddon.enums.LoyaltyPointConfigurationType;
 import de.hybris.platform.addons.loyaltypointaddon.model.LoyaltyPointConfigurationModel;
 import de.hybris.platform.core.model.c2l.CurrencyModel;
-import de.hybris.platform.core.model.order.AbstractOrderModel;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.order.OrderModel;
 import de.hybris.platform.core.model.user.CustomerModel;
@@ -137,7 +136,7 @@ public class DefaultLoyaltyPointServiceIntegrationTest extends ServicelayerTrans
 	@Test
 	public void testPayPartWithLoyaltyPoints()
 	{
-		final AbstractOrderModel order = new OrderModel();
+		final OrderModel order = new OrderModel();
 		order.setTotalPrice(TOTAL_PRICE);
 		modelService.save(order);
 
