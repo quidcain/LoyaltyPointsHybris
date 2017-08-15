@@ -24,6 +24,7 @@
  	<div class="span-14 append-1">
  		<div id="checkoutContentPanel" class="clearfix">
             <div class="headline">Loyalty point payment</div>
+			<p>Your total loyalty point amount: ${customerData.loyaltyPointAmount}</p>
 			<div class="description"><p>Amount of loyalty point that you want to spend</p></div>
             <form:form method="post" modelAttribute="loyaltyPointAmountForm">	
             	<div class="clearfix">
@@ -38,7 +39,6 @@
 				</div>
 	 		</form:form>
         </div>
- 		
  	</div>
  
     <multi-checkout:checkoutOrderDetails cartData="${cartData}" showShipDeliveryEntries="true" showPickupDeliveryEntries="true" showTax="false"/>

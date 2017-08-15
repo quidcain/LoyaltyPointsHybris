@@ -51,6 +51,7 @@ public class LoyaltyPointPaymentCheckoutStepController extends AbstractCheckoutS
 		final LoyaltyPointAmountForm form = new LoyaltyPointAmountForm();
 		form.setLoyaltyPointAmount(0);
 		model.addAttribute(form);
+		model.addAttribute("customerData", getCustomerFacade().getCurrentCustomer());
 		return LoyaltypointaddonControllerConstants.LoyaltypointPaymentPage;
 	}
 
@@ -60,11 +61,11 @@ public class LoyaltyPointPaymentCheckoutStepController extends AbstractCheckoutS
 			final BindingResult bindingResult, final Model model) throws CMSItemNotFoundException
 	{
 		setupAddPaymentPage(model);
+		model.addAttribute("customerData", getCustomerFacade().getCurrentCustomer());
 		if (bindingResult.hasErrors())
 		{
 			return LoyaltypointaddonControllerConstants.LoyaltypointPaymentPage;
 		}
-		//sessionService.setAttribute("loyaltypoint_amount", loyaltyPointAmountForm.getLoyaltyPointAmount());
 		CartModel cart = cartService.getSessionCart();
 		cart.setLoyaltyPointAmount(loyaltyPointAmountForm.getLoyaltyPointAmount());
 		cartService.setSessionCart(cart);
