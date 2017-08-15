@@ -26,6 +26,7 @@ import org.junit.Test;
 import javax.annotation.Resource;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 
 @IntegrationTest
@@ -54,7 +55,7 @@ public class DefaultLoyaltyPointServiceIntegrationTest extends ServicelayerTrans
 	private static final int ORDER_PERCENTAGE = 50;
 	private static final double TOTAL_PRICE = 10;
 	private static final int CUSTOMER_LOYALTY_POINT_AMOUNT = 5;
-	private static final String SESSION_ATTRIBUTE = "loyaltypoint_amount";
+	private static final int SELECTED_LOYALTY_POINT_AMOUNT = 2;
 	private LoyaltyPointConfigurationModel config;
 	private CurrencyModel currency;
 
@@ -134,17 +135,36 @@ public class DefaultLoyaltyPointServiceIntegrationTest extends ServicelayerTrans
 	}
 
 	@Test
-	public void testPayPartWithLoyaltyPoints()
+	public void testReduceCustomerLoyaltyPointAmount()
+	{
+		final CartModel cart = new CartModel();
+		cart.setLoyaltyPointAmount(SELECTED_LOYALTY_POINT_AMOUNT);
+		modelService.save(cart);
+
+		final CustomerModel customer = new CustomerModel();
+		customer.setLoyaltyPointAmount(CUSTOMER_LOYALTY_POINT_AMOUNT);
+		customer.setSessionCurrency(currency);
+		modelService.save(customer);
+		userService.setCurrentUser(customer);
+
+		loyaltyPointService.reduceCustomerLoyaltyPointAmount(cart);
+		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT - SELECTED_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
+	}
+
+	@Test
+	public void testSubtractLoyaltyPointPartFromTotals()
 	{
 		final OrderModel order = new OrderModel();
 		order.setTotalPrice(TOTAL_PRICE);
+		order.setLoyaltyPointAmount(SELECTED_LOYALTY_POINT_AMOUNT);
 		modelService.save(order);
 
 		final UserModel user = new EmployeeModel();
 		modelService.save(user);
 		userService.setCurrentUser(user);
+		when(userService.getCurrentUser()).thenReturn(user);
 
-		loyaltyPointService.payPartWithLoyaltyPoints(order);
+		loyaltyPointService.subtractLoyaltyPointPartFromTotals(order);
 		assertEquals(Double.valueOf(TOTAL_PRICE), order.getTotalPrice());
 
 		final CustomerModel customer = new CustomerModel();
@@ -153,20 +173,9 @@ public class DefaultLoyaltyPointServiceIntegrationTest extends ServicelayerTrans
 		modelService.save(customer);
 		userService.setCurrentUser(customer);
 
-		sessionService.removeAttribute(SESSION_ATTRIBUTE);
-		loyaltyPointService.payPartWithLoyaltyPoints(order);
+		loyaltyPointService.subtractLoyaltyPointPartFromTotals(order);
 		assertEquals(Double.valueOf(TOTAL_PRICE), order.getTotalPrice());
 		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
-
-		sessionService.setAttribute(SESSION_ATTRIBUTE, new Double(5f));
-		loyaltyPointService.payPartWithLoyaltyPoints(order);
-		assertEquals(Double.valueOf(TOTAL_PRICE), order.getTotalPrice());
-		assertEquals(CUSTOMER_LOYALTY_POINT_AMOUNT, customer.getLoyaltyPointAmount());
-
-		sessionService.setAttribute(SESSION_ATTRIBUTE, CUSTOMER_LOYALTY_POINT_AMOUNT);
-		loyaltyPointService.payPartWithLoyaltyPoints(order);
-		assertEquals(Double.valueOf(TOTAL_PRICE - CUSTOMER_LOYALTY_POINT_AMOUNT), order.getTotalPrice());
-		assertEquals(0, customer.getLoyaltyPointAmount());
 	}
 
 }
